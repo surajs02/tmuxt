@@ -9,7 +9,7 @@ fi
 
 function ensureDirExists {
     if test ! -d $1; then
-        mkdir $1
+        mkdir -vp $1
     fi
 }
 

@@ -1,18 +1,34 @@
 #!/bin/bash
 
-onelineUsage="$(basename $0) [-hHlr] [-adge template_script_path]"
-
-usage() {
-	cat <<-EndUsage
-			Usage: "$onelineUsage"
-		EndUsage
-	exit 1
-}
-
 while getopts "lha:" opt; do
 	case $opt in
 		h)
-			usage
+			cat <<-EndHelp
+					NAME: 
+						tmuxt - tmux template script manager
+
+					SYNOPSIS:
+						"$(basename $0) [-hl] [-a scriptPath] [-de script]"
+
+					DESCRIPTION:
+						tmuxt is a simple script manager for tmux: it provides options for 
+						managing scripts (located in "$")
+
+					OPTIONS:
+						-h 
+							Show help
+						-l
+							List template scripts
+						-a scriptPath
+							Add script to templates
+						-d scriptName
+							Remove script from templates
+						-e scriptName
+							Remove script from templates
+						-g scriptName
+							Get script path in templates
+				EndHelp
+			return 1
 			;;
 		a)
 			avalue="$OPTARG"
@@ -20,7 +36,7 @@ while getopts "lha:" opt; do
 			;;
 		?)
 			echo "script usage $(basename $0) [-l] [-h] [-a somevalue]" >&2
-			exit 1
+			return 1
 			;;
 	esac
 done

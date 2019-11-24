@@ -6,8 +6,7 @@ if [[ ! -v TMUXT_SETTINGS_LOADED ]]; then
     exit 0
 fi
 
-
-shortHelp="$(basename $0) [-hHl] [-a scriptPath] [-de script]"
+shortHelp="usage: $(basename $0) [-hHl] [-a scriptPath] [-de script]"
 longHelp=`cat <<EOF
 NAME: 
 	tmuxt -- tmux template script manager
@@ -51,7 +50,7 @@ while getopts "lhHa:" opt; do
 			echo "The value provided is $OPTARG"
 			;;
 		?)
-			echo "script usage $(basename $0) [-l] [-h] [-a somevalue]" >&2
+			echo $shortHelp >&2
 			exit 1
 			;;
 	esac

@@ -21,6 +21,6 @@ if test -f "$tmuxtCmdPath"; then
     ensureDirExists "$tmuxtDirPath"
     ensureDirExists "$templatesDirPath"
 else
-    echo "Cannot tmuxt command at $tmuxtCmdPath"
+    echo "No tmuxt command found at $tmuxtCmdPath"
     exit
 fi

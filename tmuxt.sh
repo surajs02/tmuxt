@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Error if settings haven't been loaded
+if [[ ! -v TMUXT_SETTINGS_LOADED ]]; then
+	echo 'tmuxt settings failed to load, try again after installing tmuxt'
+    exit 0
+fi
+
 while getopts "lha:" opt; do
 	case $opt in
 		h)

@@ -27,11 +27,11 @@ OPTIONS:
 	-a scriptPath
 		Add script to templates
 	-d scriptName
-		Remove script from templates
+		Delete script from templates
 	-e scriptName
-		Remove script from templates
+		Edit script from templates
 	-g scriptName
-		Get script path in templates
+		Get script path from templates
 EOF
 `
 
@@ -48,6 +48,7 @@ while getopts "lhHa:" opt; do
 		a)
 			avalue="$OPTARG"
 			echo "The value provided is $OPTARG"
+			exit 0
 			;;
 		?)
 			echo $shortHelp >&2

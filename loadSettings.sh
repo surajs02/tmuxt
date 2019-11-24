@@ -15,6 +15,7 @@ if ! test -f $tmuxtIniFile; then
 fi
 
 # Load vars
+. $tmuxtIniFile # ini file will assign values to tmuxt vars
 tmuxtVars=$(cat $tmuxtIniFile | cut -d='' -f1)
 export $tmuxtVars
 

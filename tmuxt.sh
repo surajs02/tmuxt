@@ -6,35 +6,45 @@ if [[ ! -v TMUXT_SETTINGS_LOADED ]]; then
     exit 0
 fi
 
-while getopts "lha:" opt; do
+
+shortHelp="$(basename $0) [-hHl] [-a scriptPath] [-de script]"
+longHelp=`cat <<EOF
+NAME: 
+	tmuxt -- tmux template script manager
+
+SYNOPSIS:
+	$shortHelp
+
+DESCRIPTION:
+	tmuxt is a simple script manager for tmux: it provides options for managing scripts
+
+OPTIONS:
+	-h 
+		Show short help
+	-H
+		Show long help
+	-l
+		List template scripts
+	-a scriptPath
+		Add script to templates
+	-d scriptName
+		Remove script from templates
+	-e scriptName
+		Remove script from templates
+	-g scriptName
+		Get script path in templates
+EOF
+`
+
+while getopts "lhHa:" opt; do
 	case $opt in
 		h)
-			cat <<-EndHelp
-					NAME: 
-						tmuxt - tmux template script manager
-
-					SYNOPSIS:
-						"$(basename $0) [-hl] [-a scriptPath] [-de script]"
-
-					DESCRIPTION:
-						tmuxt is a simple script manager for tmux: it provides options for 
-						managing scripts (located in "$")
-
-					OPTIONS:
-						-h 
-							Show help
-						-l
-							List template scripts
-						-a scriptPath
-							Add script to templates
-						-d scriptName
-							Remove script from templates
-						-e scriptName
-							Remove script from templates
-						-g scriptName
-							Get script path in templates
-				EndHelp
-			return 1
+			echo "usage: $shortHelp"
+			exit 0
+			;;
+		H)
+			echo "$longHelp"
+			exit 0
 			;;
 		a)
 			avalue="$OPTARG"
@@ -42,7 +52,7 @@ while getopts "lha:" opt; do
 			;;
 		?)
 			echo "script usage $(basename $0) [-l] [-h] [-a somevalue]" >&2
-			return 1
+			exit 1
 			;;
 	esac
 done

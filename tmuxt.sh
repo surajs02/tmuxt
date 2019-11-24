@@ -60,4 +60,12 @@ done
 # Remove options so can access params
 shift "$(($OPTIND -1))"
 
-echo "$1"
+scriptPaths=`find "$TMUXT_TEMPLATES_PATH" -name "*.sh"`
+for p in $scriptPaths; do
+	if [ -f "$p" ]; then
+		scriptName=`basename $p`
+		echo "$scriptName"
+	fi
+done
+
+# echo "$1"

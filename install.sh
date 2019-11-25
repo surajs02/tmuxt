@@ -21,8 +21,9 @@ function isDirEmpty {
 }
 
 if test -f $TMUXT_CLI_PATH; then
-    ensureDirExists $TMUXT_DIR_PATH
-    ensureDirExists $TMUXT_TEMPLATES_PATH
+    if ! test -f $TMUXT_TEMPLATES_PATH; then
+        ensureDirExists $TMUXT_TEMPLATES_PATH
+    fi
 else
     echo "No tmuxt command found at [$TMUXT_CLI_PATH]"
     exit 1

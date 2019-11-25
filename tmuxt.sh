@@ -6,7 +6,7 @@ if [[ ! -v TMUXT_SETTINGS_LOADED ]]; then
     exit 0
 fi
 
-if ! test -f $TMUXT_TEMPLATES_PATH; then
+if ! test -d $TMUXT_TEMPLATES_PATH; then
 	echo "Cannot find templates folder at [$TMUXT_TEMPLATES_PATH], try again after reinstalling tmuxt"
 	exit 1
 fi

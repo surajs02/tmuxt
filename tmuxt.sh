@@ -30,13 +30,13 @@ OPTIONS:
 	-l
 		List template scripts
 	-a scriptPath
-		Add a copy of the script to templates
-	-d scriptName
-		Delete script from templates
+		Adds the script to templates
+	-r scriptName
+		Removes the script from templates
 	-e scriptName
-		Edit script from templates
-	-g scriptName
-		Get script path from templates
+		Edits the script in templates
+	-p scriptName
+		Gets the script's path from templates
 EOF
 `
 
@@ -53,7 +53,14 @@ function getScriptNames() {
 	done
 }
 
-while getopts "lhHa:" opt; do
+function exitIfNoFile() {
+	if ! test -f $1; then
+		echo "Cannot find file at [$1]"
+		exit 1
+	fi
+}
+
+while getopts "lhHa:r:" opt; do
 	case $opt in
 		h)
 			echo "usage: $shortHelp"
@@ -74,13 +81,17 @@ while getopts "lhHa:" opt; do
 			;;
 		a)
 			newScriptPath="$OPTARG"
-
-			if ! test -f $newScriptPath; then
-				echo "Cannot find file at [$newScriptPath]"
-				exit 1
-			fi
+			exitIfNoFile $scriptPath
 
 			cp -vi $newScriptPath $TMUXT_TEMPLATES_PATH/
+			exit 0
+			;;
+		r)
+			scriptName="$OPTARG"
+			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
+			exitIfNoFile $scriptPath
+
+			rm -vi $scriptPath 
 			exit 0
 			;;
 		?)

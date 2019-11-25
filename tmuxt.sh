@@ -31,12 +31,12 @@ OPTIONS:
 		List template scripts
 	-a scriptPath
 		Adds the script to templates
+	-p scriptName
+		Gets the script's path from templates
 	-r scriptName
 		Removes the script from templates
 	-e scriptName
 		Edits the script in templates
-	-p scriptName
-		Gets the script's path from templates
 EOF
 `
 
@@ -60,7 +60,7 @@ function exitIfNoFile() {
 	fi
 }
 
-while getopts "lhHa:r:" opt; do
+while getopts "lhHa:p:r:" opt; do
 	case $opt in
 		h)
 			echo "usage: $shortHelp"
@@ -84,6 +84,14 @@ while getopts "lhHa:r:" opt; do
 			exitIfNoFile $scriptPath
 
 			cp -vi $newScriptPath $TMUXT_TEMPLATES_PATH/
+			exit 0
+			;;
+		p)
+			scriptName="$OPTARG"
+			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
+			exitIfNoFile $scriptPath
+
+			echo $scriptPath
 			exit 0
 			;;
 		r)

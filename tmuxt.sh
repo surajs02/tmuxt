@@ -2,8 +2,13 @@
 
 # Error if settings haven't been loaded
 if [[ ! -v TMUXT_SETTINGS_LOADED ]]; then
-	echo 'tmuxt settings failed to load, try again after installing tmuxt'
+	echo 'tmuxt settings failed to load, try again after reinstalling tmuxt'
     exit 0
+fi
+
+if ! test -f $TMUXT_TEMPLATES_PATH; then
+	echo "Cannot find templates folder at [$TMUXT_TEMPLATES_PATH], try again after reinstalling tmuxt"
+	exit 1
 fi
 
 shortHelp="usage: $(basename $0) [-hHl] [-a scriptPath] [-de script]"
@@ -59,11 +64,17 @@ while getopts "lhHa:" opt; do
 			exit 0
 			;;
 		l)
-			echo `ls $TMUXT_TEMPLATES_PATH`
+			scriptNames=`ls $TMUXT_TEMPLATES_PATH`
+			if [[ `echo $scriptNames|wc -w` < 1 ]]; then
+				echo 'no templates found'
+			else
+				echo $scriptNames
+			fi
 			exit 0
 			;;
 		a)
-			avalue="$OPTARG"
+			newScriptPath="$OPTARG"
+
 			echo "The value provided is $OPTARG"
 			exit 0
 			;;

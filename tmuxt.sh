@@ -35,6 +35,19 @@ OPTIONS:
 EOF
 `
 
+function getScriptPaths() {
+	echo `find "$TMUXT_TEMPLATES_PATH" -name "*.sh"`
+}
+
+function getScriptNames() {
+	for p in `getScriptPaths`; do
+		if [ -f "$p" ]; then
+			scriptName=`basename $p`
+			echo "$scriptName"
+		fi
+	done
+}
+
 while getopts "lhHa:" opt; do
 	case $opt in
 		h)
@@ -43,6 +56,10 @@ while getopts "lhHa:" opt; do
 			;;
 		H)
 			echo "$longHelp"
+			exit 0
+			;;
+		l)
+			echo `ls $TMUXT_TEMPLATES_PATH`
 			exit 0
 			;;
 		a)
@@ -59,13 +76,5 @@ done
 
 # Remove options so can access params
 shift "$(($OPTIND -1))"
-
-scriptPaths=`find "$TMUXT_TEMPLATES_PATH" -name "*.sh"`
-for p in $scriptPaths; do
-	if [ -f "$p" ]; then
-		scriptName=`basename $p`
-		echo "$scriptName"
-	fi
-done
 
 # echo "$1"

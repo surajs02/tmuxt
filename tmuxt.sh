@@ -2,12 +2,12 @@
 
 # Error if settings haven't been loaded
 if [[ ! -v TMUXT_SETTINGS_LOADED ]]; then
-	echo 'tmuxt settings failed to load, try again after reinstalling tmuxt'
+	echo 'tmuxt settings failed to load'
     exit 0
 fi
 
 if ! test -d $TMUXT_TEMPLATES_PATH; then
-	echo "Cannot find templates folder at [$TMUXT_TEMPLATES_PATH], try again after reinstalling tmuxt"
+	echo "Cannot find templates folder at [$TMUXT_TEMPLATES_PATH]"
 	exit 1
 fi
 
@@ -30,7 +30,7 @@ OPTIONS:
 	-l
 		List template scripts
 	-a scriptPath
-		Add script to templates
+		Add a copy of the script to templates
 	-d scriptName
 		Delete script from templates
 	-e scriptName
@@ -66,7 +66,7 @@ while getopts "lhHa:" opt; do
 		l)
 			scriptNames=`ls $TMUXT_TEMPLATES_PATH`
 			if [[ `echo $scriptNames|wc -w` < 1 ]]; then
-				echo 'no templates found'
+				echo 'No templates found'
 			else
 				echo $scriptNames
 			fi
@@ -75,7 +75,12 @@ while getopts "lhHa:" opt; do
 		a)
 			newScriptPath="$OPTARG"
 
-			echo "The value provided is $OPTARG"
+			if ! test -f $newScriptPath; then
+				echo "Cannot find file at [$newScriptPath]"
+				exit 1
+			fi
+
+			cp -vi $newScriptPath $TMUXT_TEMPLATES_PATH/
 			exit 0
 			;;
 		?)

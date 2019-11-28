@@ -12,7 +12,7 @@ if ! test -d $TMUXT_TEMPLATES_PATH; then
 fi
 
 shortHelp="usage: $(basename $0) [-hHl] [-a scriptPath] [-de script]"
-longHelp=`cat <<EOF
+longHelp=$(cat <<EOF
 NAME: 
 	tmuxt -- tmux template script manager
 
@@ -38,7 +38,7 @@ OPTIONS:
 	-e scriptName
 		Edits the script in templates
 EOF
-`
+)
 
 function getScriptPaths() {
 	echo `find "$TMUXT_TEMPLATES_PATH" -name "*.sh"`
@@ -99,7 +99,7 @@ while getopts "lhHa:p:r:" opt; do
 			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
 			exitIfNoFile $scriptPath
 
-			rm -vi $scriptPath 
+			rm -vi $scriptPath
 			exit 0
 			;;
 		?)

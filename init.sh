@@ -13,7 +13,8 @@ function isDirEmpty {
     return 1
 }
 
-loadSettingsFile='./loadSettings.sh'
+currentDir="$(dirname $BASH_SOURCE)" # current dir is based on where init.sh was launched from
+loadSettingsFile="$currentDir/loadSettings.sh"
 if ! test -f $loadSettingsFile; then
     echo "Cannot load settings, no file found at [$loadSettingsFile]"
     return 1
@@ -23,6 +24,9 @@ fi
 if test -f $TMUXT_CLI_PATH; then
     if ! test -f $TMUXT_TEMPLATES_PATH; then
         ensureDirExists $TMUXT_TEMPLATES_PATH
+        # Setup tab autocompletion
+        # (Double quotes to preserve spaces for wordlist)
+        complete -W "$TMUXT_TEMPLATES_PATH" $TMUXT_CLI_PATH
     fi
 else
     echo "No tmuxt command found at [$TMUXT_CLI_PATH]"

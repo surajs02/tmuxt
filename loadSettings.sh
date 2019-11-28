@@ -7,7 +7,8 @@ if [[ -v TMUXT_SETTINGS_LOADED ]] && [ $TMUXT_SETTINGS_LOADED -eq 0 ]; then
     return 0
 fi
 
-tmuxtIniFile="./tmuxt.ini"
+currentDir="$(dirname $BASH_SOURCE)"
+tmuxtIniFile="$currentDir/tmuxt.ini"
 
 if ! test -f $tmuxtIniFile; then
     echo "No file found at [$tmuxtIniFile]"

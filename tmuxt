@@ -60,7 +60,7 @@ function exitIfNoFile() {
 	fi
 }
 
-while getopts "lhHa:p:r:" opt; do
+while getopts "lhHa:p:r:e:" opt; do
 	case $opt in
 		h)
 			echo "usage: $shortHelp"
@@ -100,6 +100,19 @@ while getopts "lhHa:p:r:" opt; do
 			exitIfNoFile $scriptPath
 
 			rm -vi $scriptPath
+			exit 0
+			;;
+		e)
+			scriptName="$OPTARG"
+			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
+			exitIfNoFile $scriptPath
+
+			if [ -v $EDITOR ]; then # No default editor
+				echo 'No editor found at [$EDITOR]'
+			else
+				$EDITOR $scriptPath
+			fi
+
 			exit 0
 			;;
 		?)

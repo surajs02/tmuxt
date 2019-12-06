@@ -62,6 +62,15 @@ function exitIfNoFile() {
 	fi
 }
 
+# ie `isStrInFile str file` where str=$2, file=$1
+function isStrInFile() {
+	if [[ `cat $2|grep -i $1|wc -w` > 0 ]]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
 while getopts "lhHa:p:r:e:x:d:" opt; do
 	case $opt in
 		h)
@@ -134,13 +143,16 @@ while getopts "lhHa:p:r:e:x:d:" opt; do
 
 			# Update default template in settings
 			defaultTemplateVarName='TMUXT_DEFAULT_TEMPLATE'
-			if [[ `cat $TMUXT_SETTINGS_PATH|grep -i $defaultTemplateVarName|wc -w` > 0 ]]; then
-				echo 'settings has default'
+			if isStrInFile $defaultTemplateVarName $TMUXT_SETTINGS_PATH; then
+				echo 'y'
+				# Update default template in settings
+				# sed -i "s/TMUXT_DEFAULT_TEMPLATE=.*$/TMUXT_DEFAULT_TEMPLATE='$scriptName'/" $TMUXT_SETTINGS_PATH
 			else
-				echo 'settings not have default'
+				echo 'n'
+				# Add default template to settings
+				# echo -e "\n$defaultTemplateVarName='$scriptName'" >> $TMUXT_SETTINGS_PATH
 			fi
-
-			# cat tmuxt.ini|sed "s/TMUXT_DEFAULT_TEMPLATE=.*$/TMUXT_DEFAULT_TEMPLATE='$scriptName'/"
+			
 			exit 0
 			;;
 		?)

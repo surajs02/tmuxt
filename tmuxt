@@ -62,7 +62,7 @@ function exitIfNoFile() {
 	fi
 }
 
-while getopts "lhHa:p:r:e:x:" opt; do
+while getopts "lhHa:p:r:e:x:d:" opt; do
 	case $opt in
 		h)
 			echo "$shortHelp"
@@ -119,10 +119,28 @@ while getopts "lhHa:p:r:e:x:" opt; do
 			;;
 		x)
 			scriptName="$OPTARG"
+			echo $scriptName
 			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
 			exitIfNoFile $scriptPath
 
 			$scriptPath
+			exit 0
+			;;
+		d)
+			echo 'd'
+			scriptName="$OPTARG"
+			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
+			exitIfNoFile $scriptPath
+
+			# Update default template in settings
+			defaultTemplateVarName='TMUXT_DEFAULT_TEMPLATE'
+			if [[ `cat $TMUXT_SETTINGS_PATH|grep -i $defaultTemplateVarName|wc -w` > 0 ]]; then
+				echo 'settings has default'
+			else
+				echo 'settings not have default'
+			fi
+
+			# cat tmuxt.ini|sed "s/TMUXT_DEFAULT_TEMPLATE=.*$/TMUXT_DEFAULT_TEMPLATE='$scriptName'/"
 			exit 0
 			;;
 		?)
@@ -136,6 +154,9 @@ done
 shift "$(($OPTIND -1))"
 
 if [ "$#" -lt 1 ]; then
-	echo "$shortHelp"
+	echo "No default template set"
 	exit 1
+else
+	# TODO execute default
+	echo "Executing default template at [$TMUXT_DEFAULT_TEMPLATE]"
 fi

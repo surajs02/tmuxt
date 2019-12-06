@@ -11,7 +11,7 @@ if ! test -d $TMUXT_TEMPLATES_PATH; then
 	exit 1
 fi
 
-shortHelp="usage: $(basename $0) [-hHl] [-a scriptPath] [-de script]"
+shortHelp="usage: $(basename $0) [-hHl | -a scriptPath | -dex scriptName]"
 longHelp=$(cat <<EOF
 NAME: 
 	tmuxt -- tmux template script manager
@@ -37,6 +37,8 @@ OPTIONS:
 		Removes the script from templates
 	-e scriptName
 		Edits the script in templates
+	-x scriptName
+		Executes the script in templates
 EOF
 )
 
@@ -60,10 +62,10 @@ function exitIfNoFile() {
 	fi
 }
 
-while getopts "lhHa:p:r:e:" opt; do
+while getopts "lhHa:p:r:e:x:" opt; do
 	case $opt in
 		h)
-			echo "usage: $shortHelp"
+			echo "$shortHelp"
 			exit 0
 			;;
 		H)
@@ -115,6 +117,14 @@ while getopts "lhHa:p:r:e:" opt; do
 
 			exit 0
 			;;
+		x)
+			scriptName="$OPTARG"
+			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
+			exitIfNoFile $scriptPath
+
+			$scriptPath
+			exit 0
+			;;
 		?)
 			echo $shortHelp >&2
 			exit 1
@@ -125,4 +135,7 @@ done
 # Remove options so can access params
 shift "$(($OPTIND -1))"
 
-# echo "$1"
+if [ "$#" -lt 1 ]; then
+	echo "$shortHelp"
+	exit 1
+fi

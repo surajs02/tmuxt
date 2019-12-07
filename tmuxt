@@ -1,0 +1,209 @@
+#!/bin/bash
+
+# Error if settings haven't been loaded
+if [[ ! -v TMUXT_SETTINGS_LOADED ]]; then
+	echo 'tmuxt settings failed to load'
+    exit 0
+fi
+
+if ! test -d $TMUXT_TEMPLATES_PATH; then
+	echo "Cannot find templates folder at [$TMUXT_TEMPLATES_PATH]"
+	exit 1
+fi
+
+shortHelp="usage: $(basename $0) [-dhlx | -a scriptPath | -dex scriptName]"
+longHelp=$(cat <<EOF
+NAME: 
+	tmuxt -- tmux template script manager
+
+SYNOPSIS:
+	$shortHelp
+
+DESCRIPTION:
+	tmuxt (Tmux Templates) is a simple script manager for tmux that provides options for 
+	managing scripts (e.g., add, edit, etc.) added to the tmuxt templates directory.
+
+	Scripts are used as templates to create pre-defined tmuxt screens (e.g., panes, windows, etc.).
+
+OPTIONS:
+	-a scriptPath
+		Adds the script to templates
+	-e scriptName
+		Edits the script in templates
+	-d 
+		Prints the current default script in templates
+	-d scriptName
+		Sets the script as default in templates
+	-h
+		Show this help text
+	-l
+		List template scripts
+	-p scriptName
+		Gets the script's path from templates
+	-r scriptName
+		Removes the script from templates
+	-x
+		Runs the default template
+	-x scriptName
+		Executes the script in templates
+EOF
+)
+
+function getScriptPaths() {
+	echo `find "$TMUXT_TEMPLATES_PATH" -name "*.sh"`
+}
+
+function getScriptNames() {
+	for p in `getScriptPaths`; do
+		if [ -f "$p" ]; then
+			scriptName=`basename $p`
+			echo "$scriptName"
+		fi
+	done
+}
+
+function exitIfNoFile() {
+	if ! test -f $1; then
+		echo "Cannot find file at [$1]"
+		exit 1
+	fi
+}
+
+# ie `isStrInFile str file` where str=$2, file=$1
+function isStrInFile() {
+	if [[ `cat $2|grep -i $1|wc -w` > 0 ]]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+function defaultTemplateExists() {
+	defaultTemplateVarName='TMUXT_DEFAULT_TEMPLATE'
+	isStrInFile $defaultTemplateVarName $TMUXT_SETTINGS_PATH
+}
+
+function refreshSettings() {
+	# Ensure using latest env vars
+	. $TMUXT_SETTINGS_PATH
+}
+
+# x: means x requires arg, :x means x accepts optional args
+while getopts "lha:p:r:e:xd" opt; do
+	case $opt in
+		h)
+			echo "$longHelp"
+			exit 0
+			;;
+		l)
+			scriptNames=`ls $TMUXT_TEMPLATES_PATH`
+			if [[ `echo $scriptNames|wc -w` < 1 ]]; then
+				echo 'No templates found'
+			else
+				echo $scriptNames
+			fi
+			exit 0
+			;;
+		a)
+			newScriptPath="$OPTARG"
+			exitIfNoFile $scriptPath
+
+			cp -vi $newScriptPath $TMUXT_TEMPLATES_PATH/
+			exit 0
+			;;
+		p)
+			scriptName="$OPTARG"
+			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
+			exitIfNoFile $scriptPath
+
+			echo $scriptPath
+			exit 0
+			;;
+		r)
+			scriptName="$OPTARG"
+			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
+			exitIfNoFile $scriptPath
+
+			rm -vi $scriptPath
+			exit 0
+			;;
+		e)
+			scriptName="$OPTARG"
+			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
+			exitIfNoFile $scriptPath
+
+			if [ -v $EDITOR ]; then # No default editor
+				echo 'No editor found at [$EDITOR]'
+			else
+				$EDITOR $scriptPath
+			fi
+
+			exit 0
+			;;
+		x)
+			# Gets arg after option even though getopts declares option x as having no args
+			OPTARG=${!OPTIND}
+			# Seems OPTIND is number of next arg (n) and n is var holding next arg via var indirection? 
+			# TODO johto Change from using getopts to manual parsing so can handle optional option args in a cleaner way
+
+			# Execute default template if no scriptName given
+			if [ -z "$OPTARG" ]; then
+				if defaultTemplateExists; then
+					refreshSettings # Get latest default template setting
+					echo "Executing default template [$TMUXT_DEFAULT_TEMPLATE]"
+					$TMUXT_TEMPLATES_PATH/$TMUXT_DEFAULT_TEMPLATE
+				else
+					echo "No default template set"
+				fi
+				exit 0
+			fi
+
+			scriptName="$OPTARG"
+			echo $scriptName
+			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
+			exitIfNoFile $scriptPath
+
+			$scriptPath
+			exit 0
+			;;
+		d)
+			OPTARG=${!OPTIND} # TODO johto Remove this hack
+
+			# Print current default template if no scriptName given
+			if [[ -z "$OPTARG" ]]; then
+				if defaultTemplateExists; then
+					refreshSettings # Get latest default template setting
+					echo "Current default template is [$TMUXT_DEFAULT_TEMPLATE]"
+				else
+					echo "No default template set"
+				fi
+				exit 0
+			fi
+
+			scriptName="$OPTARG"
+			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
+			exitIfNoFile $scriptPath
+			
+			if defaultTemplateExists; then
+				# Update default template in settings
+				sed -i "s/TMUXT_DEFAULT_TEMPLATE=.*$/TMUXT_DEFAULT_TEMPLATE='$scriptName'/" $TMUXT_SETTINGS_PATH
+			else
+				# Add default template to settings
+				echo -e "$defaultTemplateVarName='$scriptName'" >> $TMUXT_SETTINGS_PATH
+			fi
+			
+			exit 0
+			;;
+		?)
+			echo $shortHelp >&2
+			exit 1
+			;;
+	esac
+done
+
+# Remove options so can access params
+shift "$(($OPTIND -1))"
+
+echo $shortHelp
+exit 1
+

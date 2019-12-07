@@ -23,10 +23,8 @@ DESCRIPTION:
 	tmuxt is a simple script manager for tmux: it provides options for managing scripts
 
 OPTIONS:
-	-h 
-		Show short help
-	-H
-		Show long help
+	-h
+		Show help
 	-l
 		List template scripts
 	-a scriptPath
@@ -81,10 +79,6 @@ function defaultTemplateExists() {
 while getopts "lhHa:p:r:e:x:d:" opt; do
 	case $opt in
 		h)
-			echo "$shortHelp"
-			exit 0
-			;;
-		H)
 			echo "$longHelp"
 			exit 0
 			;;

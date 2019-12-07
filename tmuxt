@@ -11,7 +11,7 @@ if ! test -d $TMUXT_TEMPLATES_PATH; then
 	exit 1
 fi
 
-shortHelp="usage: $(basename $0) [-hl | -a scriptPath | -dex scriptName]"
+shortHelp="usage: $(basename $0) [-dhlx | -a scriptPath | -dex scriptName]"
 longHelp=$(cat <<EOF
 NAME: 
 	tmuxt -- tmux template script manager
@@ -20,12 +20,10 @@ SYNOPSIS:
 	$shortHelp
 
 DESCRIPTION:
-	tmuxt (Tmux Templates) is a simple script manager for tmux. tmuxt it provides options for 
+	tmuxt (Tmux Templates) is a simple script manager for tmux that provides options for 
 	managing scripts (e.g., add, edit, etc.) added to the tmuxt templates directory.
 
 	Scripts are used as templates to create pre-defined tmuxt screens (e.g., panes, windows, etc.).
-
-	Running the tmuxt command without options will attempt to run the default template.
 
 OPTIONS:
 	-a scriptPath
@@ -33,18 +31,19 @@ OPTIONS:
 	-e scriptName
 		Edits the script in templates
 	-d 
-		Prints current default template
+		Prints the current default script in templates
 	-d scriptName
-		Sets the script as default in templates (the default scriptis run using the 
-		tmuxt command without options)
+		Sets the script as default in templates
 	-h
-		Show help
+		Show this help text
 	-l
 		List template scripts
 	-p scriptName
 		Gets the script's path from templates
 	-r scriptName
 		Removes the script from templates
+	-x
+		Runs the default template
 	-x scriptName
 		Executes the script in templates
 EOF
@@ -84,7 +83,13 @@ function defaultTemplateExists() {
 	isStrInFile $defaultTemplateVarName $TMUXT_SETTINGS_PATH
 }
 
-while getopts "lha:p:r:e:x::d" opt; do
+function refreshSettings() {
+	# Ensure using latest env vars
+	. $TMUXT_SETTINGS_PATH
+}
+
+# x: means x requires arg, :x means x accepts optional args
+while getopts "lha:p:r:e:xd" opt; do
 	case $opt in
 		h)
 			echo "$longHelp"
@@ -136,6 +141,23 @@ while getopts "lha:p:r:e:x::d" opt; do
 			exit 0
 			;;
 		x)
+			# Gets arg after option even though getopts declares option x as having no args
+			OPTARG=${!OPTIND}
+			# Seems OPTIND is number of next arg (n) and n is var holding next arg via var indirection? 
+			# TODO johto Change from using getopts to manual parsing so can handle optional option args in a cleaner way
+
+			# Execute default template if no scriptName given
+			if [ -z "$OPTARG" ]; then
+				if defaultTemplateExists; then
+					refreshSettings # Get latest default template setting
+					echo "Executing default template [$TMUXT_DEFAULT_TEMPLATE]"
+					$TMUXT_TEMPLATES_PATH/$TMUXT_DEFAULT_TEMPLATE
+				else
+					echo "No default template set"
+				fi
+				exit 0
+			fi
+
 			scriptName="$OPTARG"
 			echo $scriptName
 			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
@@ -145,10 +167,12 @@ while getopts "lha:p:r:e:x::d" opt; do
 			exit 0
 			;;
 		d)
+			OPTARG=${!OPTIND} # TODO johto Remove this hack
+
 			# Print current default template if no scriptName given
-			if [ -z "$OPTARG" ]; then
-				templateMessage=''
+			if [[ -z "$OPTARG" ]]; then
 				if defaultTemplateExists; then
+					refreshSettings # Get latest default template setting
 					echo "Current default template is [$TMUXT_DEFAULT_TEMPLATE]"
 				else
 					echo "No default template set"
@@ -180,14 +204,6 @@ done
 # Remove options so can access params
 shift "$(($OPTIND -1))"
 
-# Ensure using latest env vars
-. $TMUXT_INIT_PATH
+echo $shortHelp
+exit 1
 
-if defaultTemplateExists; then
-	echo "Executing default template [$TMUXT_DEFAULT_TEMPLATE]"
-	$TMUXT_TEMPLATES_PATH/$TMUXT_DEFAULT_TEMPLATE
-	exit 0
-else
-	echo "No default template set"
-	exit 1
-fi

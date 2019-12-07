@@ -39,6 +39,8 @@ OPTIONS:
 		Edits the script in templates
 	-x scriptName
 		Executes the script in templates
+	-d scriptName
+		Sets the script as default in templates (run the default script using tmuxt without options)
 EOF
 )
 
@@ -69,6 +71,11 @@ function isStrInFile() {
 	else
 		return 1
 	fi
+}
+
+function defaultTemplateExists() {
+	defaultTemplateVarName='TMUXT_DEFAULT_TEMPLATE'
+	isStrInFile $defaultTemplateVarName $TMUXT_SETTINGS_PATH
 }
 
 while getopts "lhHa:p:r:e:x:d:" opt; do
@@ -140,17 +147,13 @@ while getopts "lhHa:p:r:e:x:d:" opt; do
 			scriptName="$OPTARG"
 			scriptPath=$TMUXT_TEMPLATES_PATH/$scriptName
 			exitIfNoFile $scriptPath
-
-			# Update default template in settings
-			defaultTemplateVarName='TMUXT_DEFAULT_TEMPLATE'
-			if isStrInFile $defaultTemplateVarName $TMUXT_SETTINGS_PATH; then
-				echo 'y'
+			
+			if defaultTemplateExists; then
 				# Update default template in settings
-				# sed -i "s/TMUXT_DEFAULT_TEMPLATE=.*$/TMUXT_DEFAULT_TEMPLATE='$scriptName'/" $TMUXT_SETTINGS_PATH
+				sed -i "s/TMUXT_DEFAULT_TEMPLATE=.*$/TMUXT_DEFAULT_TEMPLATE='$scriptName'/" $TMUXT_SETTINGS_PATH
 			else
-				echo 'n'
 				# Add default template to settings
-				# echo -e "\n$defaultTemplateVarName='$scriptName'" >> $TMUXT_SETTINGS_PATH
+				echo -e "$defaultTemplateVarName='$scriptName'" >> $TMUXT_SETTINGS_PATH
 			fi
 			
 			exit 0
@@ -165,10 +168,14 @@ done
 # Remove options so can access params
 shift "$(($OPTIND -1))"
 
-if [ "$#" -lt 1 ]; then
+# Ensure using latest env vars
+. $TMUXT_INIT_PATH
+
+if defaultTemplateExists; then
+	echo "Executing default template [$TMUXT_DEFAULT_TEMPLATE]"
+	$TMUXT_TEMPLATES_PATH/$TMUXT_DEFAULT_TEMPLATE
+	exit 0
+else
 	echo "No default template set"
 	exit 1
-else
-	# TODO execute default
-	echo "Executing default template at [$TMUXT_DEFAULT_TEMPLATE]"
 fi

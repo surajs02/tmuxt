@@ -29,7 +29,7 @@ OPTIONS:
 	-a scriptPath
 		Adds the script to templates
 	-e scriptName
-		Edits the script in templates
+		Edits the script in templates (uses the default editor via \$EDITOR)
 	-d 
 		Prints the current default script in templates
 	-d scriptName

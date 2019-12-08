@@ -68,7 +68,7 @@ Execute default template:
 tmuxt -x
 ```
 
-Edit template:
+Edit template (uses default editor via `$EDITOR`):
 ```bash
 tmuxt -e script.sh
 ```

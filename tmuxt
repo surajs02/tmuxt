@@ -109,6 +109,7 @@ while getopts "lha:p:r:e:xd" opt; do
 			exitIfNoFile $scriptPath
 
 			cp -vi $newScriptPath $TMUXT_TEMPLATES_PATH/
+			chmod +x $TMUXT_TEMPLATES_PATH/`basename $newScriptPath`
 			exit 0
 			;;
 		p)

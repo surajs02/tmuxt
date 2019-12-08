@@ -26,7 +26,7 @@ cd tmuxt
 
 tmuxt is portable so can easily be removed by removing its setup line from `~/.bashrc`:
 ```bash
-# TODO johto Add command to remove tmuxt from .bashrc
+. uninstall.sh
 ```
 
 ## Usage

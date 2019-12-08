@@ -31,7 +31,7 @@ tmuxt is portable so can easily be removed by removing its setup line from `~/.b
 
 ## Usage
 
-`tmuxt -dhlx | -a scriptPath | -dex scriptName]`
+`tmuxt -dhlx | -a scriptPath | -derx scriptName]`
 
 Show help:
 ```bash

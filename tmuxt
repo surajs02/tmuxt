@@ -11,7 +11,7 @@ if ! test -d $TMUXT_TEMPLATES_PATH; then
 	exit 1
 fi
 
-shortHelp="usage: $(basename $0) [-dhlx | -a scriptPath | -dex scriptName]"
+shortHelp="usage: $(basename $0) [-dhlx | -a scriptPath | -derx scriptName]"
 longHelp=$(cat <<EOF
 NAME: 
 	tmuxt -- tmux template script manager

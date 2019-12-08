@@ -14,17 +14,17 @@ tmuxt was created to manage scripts containing tmux commands but can be used to 
 
 ## Install
 
-Download and run the install file:
+Download and run the install script:
 ```bash
 cd ~
 git clone https://github.com/surajs02/tmuxt.git
 cd tmuxt
-. .install.sh
+. install.sh
 ```
 
 ## Uninstall
 
-tmuxt is portable so can easily be removed by removing its setup line from `~/.bashrc`:
+tmuxt is portable (all setup is done via `~/.bashrc`) so is easily removed by running the uninstall script:
 ```bash
 . uninstall.sh
 ```

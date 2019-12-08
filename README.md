@@ -40,7 +40,7 @@ tmuxt -h
 
 Add script to templates:
 ```bash
-tmuxt -a script.sh
+tmuxt -a ./script.sh
 ```
 
 List templates:
@@ -50,7 +50,7 @@ tmuxt -l
 
 Set template as default:
 ```bash
-tmuxt -d script
+tmuxt -d script.sh
 ```
 
 Show current default template:
@@ -60,7 +60,7 @@ tmuxt -d
 
 Execute template:
 ```
-tmuxt -x script
+tmuxt -x script.sh
 ```
 
 Execute default template:
@@ -70,12 +70,12 @@ tmuxt -x
 
 Edit template:
 ```bash
-tmuxt -e script
+tmuxt -e script.sh
 ```
 
 Remove template:
 ```bash
-tmuxt -r script
+tmuxt -r script.sh
 ```
 
 ## Future plans

@@ -35,7 +35,11 @@ fi
 . $loadSettingsFile
 
 if test -f $TMUXT_CLI_PATH; then
+    chmod +x $TMUXT_CLI_PATH
     if ! test -f $TMUXT_TEMPLATES_PATH; then
+        for template in $TMUXT_TEMPLATES_PATH/*; do
+            chmod +x $template
+        done
         ensureDirExists $TMUXT_TEMPLATES_PATH
         setupCompletion
     fi

@@ -82,3 +82,4 @@ tmuxt -r script.sh
 
 - Replace `getopts` with custom options handling (e.g., optional option arguments)
 - Add current directory autocomplete for add option (currently autocomplete lists template directory contents)
+- Add man page

@@ -21,7 +21,7 @@ SYNOPSIS:
 
 DESCRIPTION:
 	tmuxt (Tmux Templates) is a simple script manager for tmux that provides options for 
-	managing scripts (e.g., add, edit, etc.) added to the tmux templates directory.
+	managing scripts (e.g., add, edit, etc.) added to the tmuxt templates directory.
 
 	Scripts are used as templates to create pre-defined tmuxt screens (e.g., panes, windows, etc.).
 

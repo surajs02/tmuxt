@@ -24,7 +24,7 @@ Scripts are used as templates to create pre-defined tmuxt screens (e.g., panes, 
 
 ## Demo
 
-Video demonstration available at [YouTube](https://www.youtube.com/watch?v=37Z_LZy7Z2E).
+Video demonstration available at [YouTube](https://www.youtube.com/watch?v=J2Cz5T2N8tU).
 
 ## Dependencies
 

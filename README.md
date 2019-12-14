@@ -1,9 +1,26 @@
 # tmuxt
 
+<div align="center">
+  <a href="screenshots/tmuxt.png">
+    <img src="screenshots/tmuxt.png" width="100%"/>
+  </a>
+</div>
+
 tmuxt (Tmux Templates) is a simple script manager for tmux that provides options for 
 managing scripts (e.g., add, edit, etc.) added to the tmuxt [templates](templates) directory.
 
 Scripts are used as templates to create pre-defined tmuxt screens (e.g., panes, windows, etc.).
+
+**Features**:
+- Easy install/uninstall
+- List templates
+- Pre-defined templates
+- Quickly run a template by setting a default template
+- Add custom templates
+- Execute templates
+- Reference templates by path
+- Edit templates
+- Remove templates
 
 ## Demo
 

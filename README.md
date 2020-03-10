@@ -52,7 +52,7 @@ tmuxt is portable (all setup is done via `~/.bashrc`) so is easily removed by ru
 
 ## Usage
 
-`tmuxt -dhlx | -a scriptPath | -derx scriptName]`
+`tmuxt [-dhlx | -a scriptPath | -derx scriptName]`
 
 Show help:
 ```bash
